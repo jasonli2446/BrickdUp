@@ -27,9 +27,11 @@ public class InventoryManager : MonoBehaviour
     }
 
     // Resets the block count to the given amount and updates the UI.
-    public void ResetBlockCount(int newCount)
+    public void ResetBlockCount(int count)
     {
-        currentBlockCount = newCount;
+        currentBlockCount = count;
+
+        // If you have UI elements to update, do that here
         UpdateUI();
     }
 
@@ -39,6 +41,7 @@ public class InventoryManager : MonoBehaviour
         placedBlocks.Add(block);
         currentBlockCount--;
         UpdateUI();
+        Debug.Log("Block placed. Current block count: " + currentBlockCount);
     }
 
     // Destroys all placed blocks and clears the list.

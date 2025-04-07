@@ -109,12 +109,11 @@ public class TilePainter : MonoBehaviour
             if (InventoryManager.Instance.currentBlockCount > 0)
             {
                 targetTilemap.SetTile(tileCellPos, tileToPaint);
-                Debug.Log($"Placed tile at {tileCellPos} (distance: {distance:F2})");
 
-                // Dummy block GameObject (replace with prefab if needed)
+                // Create block GameObject
                 GameObject newBlockObject = new GameObject("PlacedBlock");
                 newBlockObject.transform.position = tileWorldCenter;
-
+                newBlockObject.tag = "placed";
                 InventoryManager.Instance.OnBlockPlaced(newBlockObject);
             }
             else
