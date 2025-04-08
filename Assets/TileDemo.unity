@@ -4082,7 +4082,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allowedBlockCount: 3
-  targetTilemap: {fileID: 0}
+  targetTilemap: {fileID: 1645988791}
 --- !u!61 &1764883070
 BoxCollider2D:
   m_ObjectHideFlags: 0
