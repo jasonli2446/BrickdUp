@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Enemy
   - placed
+  - GiveZone
+  - ResetZone
   layers:
   - Default
   - TransparentFX
