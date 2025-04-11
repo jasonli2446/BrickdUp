@@ -13,6 +13,8 @@ public class GiveZoneController : MonoBehaviour
     // Reset the used state so the zone can give blocks again
     used = false;
     Debug.Log($"Give zone {gameObject.name} reset to unused state");
+    Animator animator = GetComponentInChildren<Animator>();
+    animator.SetBool("open", false);
   }
 
   private void OnTriggerEnter2D(Collider2D other)
@@ -22,7 +24,8 @@ public class GiveZoneController : MonoBehaviour
     InventoryManager.Instance.ResetBlockCount(giveAmount);
     used = true;
 
-    // optional: swap chest sprite to 'opened' here,
-    // e.g. GetComponentInChildren<SpriteRenderer>().sprite = openedSprite;
+    Animator animator = GetComponentInChildren<Animator>();
+    animator.SetBool("open", true);
+    animator.SetTrigger("entered");
   }
 }

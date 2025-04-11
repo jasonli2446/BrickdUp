@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      BrickdUpLogo_0: 6424314990756184014
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
