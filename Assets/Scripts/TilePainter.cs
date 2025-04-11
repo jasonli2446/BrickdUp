@@ -70,6 +70,10 @@ public class TilePainter : MonoBehaviour
 
     void Update()
     {
+        // Dont allow painting if the game is paused
+        if (Time.timeScale == 0f)
+            return;
+
         // Check for mouse click
         if (Input.GetMouseButtonDown(0))
         {
