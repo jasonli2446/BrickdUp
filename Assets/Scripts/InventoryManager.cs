@@ -12,7 +12,6 @@ public class InventoryManager : MonoBehaviour
     [HideInInspector]
     public int currentBlockCount;
 
-    // keep track of placed blocks so we can clear them
     private readonly List<GameObject> placedBlocks = new List<GameObject>();
 
     void Awake()
@@ -26,30 +25,23 @@ public class InventoryManager : MonoBehaviour
         UpdateUI();
     }
 
-    // Resets the block count to the given amount and updates the UI.
-    public void ResetBlockCount(int count)
+    public void ResetBlockCount(int newCount)
     {
-        currentBlockCount = count;
-
-        // If you have UI elements to update, do that here
+        currentBlockCount = newCount;
         UpdateUI();
     }
 
-    // Call this whenever you successfully place a block.
     public void OnBlockPlaced(GameObject block)
     {
         placedBlocks.Add(block);
         currentBlockCount--;
         UpdateUI();
-        Debug.Log("Block placed. Current block count: " + currentBlockCount);
     }
 
-    // Destroys all placed blocks and clears the list.
     public void ClearPlacedBlocks()
     {
-        foreach (var block in placedBlocks)
-            if (block != null)
-                Destroy(block);
+        foreach (var b in placedBlocks)
+            if (b != null) Destroy(b);
         placedBlocks.Clear();
     }
 
