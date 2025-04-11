@@ -6,7 +6,7 @@ public class MainMenuController : MonoBehaviour
     // Called by "Start Game" button
     public void StartGame()
     {
-        SceneManager.LoadScene("Demo");
+        SceneManager.LoadScene("Level1");
     }
 
     // Called by "Level Select" button

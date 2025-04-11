@@ -179,6 +179,10 @@ namespace Gamekit2D
 
         void Update()
         {
+            // Skip update if the game is paused.
+            if (Time.timeScale == 0f)
+                return;
+            /*
             if (PlayerInput.Instance.Pause.Down)
             {
                 if (!m_InPause)
@@ -197,10 +201,11 @@ namespace Gamekit2D
                     Unpause();
                 }
             }
+            */
         }
 
         void FixedUpdate()
-        { 
+        {
             m_CharacterController2D.Move(m_MoveVector * Time.deltaTime);
             m_Animator.SetFloat(m_HashHorizontalSpeedPara, m_MoveVector.x);
             m_Animator.SetFloat(m_HashVerticalSpeedPara, m_MoveVector.y);
@@ -503,7 +508,7 @@ namespace Gamekit2D
                 }
             }
 
-            if(previousPushable != null && m_CurrentPushable != previousPushable)
+            if (previousPushable != null && m_CurrentPushable != previousPushable)
             {//we changed pushable (or don't have one anymore), stop the old one sound
                 previousPushable.EndPushing();
             }
@@ -526,7 +531,7 @@ namespace Gamekit2D
 
         public void StopPushing()
         {
-            if(m_CurrentPushable)
+            if (m_CurrentPushable)
                 m_CurrentPushable.EndPushing();
         }
 
@@ -575,16 +580,16 @@ namespace Gamekit2D
         {
             int colliderCount = 0;
             int fallthroughColliderCount = 0;
-        
+
             for (int i = 0; i < m_CharacterController2D.GroundColliders.Length; i++)
             {
                 Collider2D col = m_CharacterController2D.GroundColliders[i];
-                if(col == null)
+                if (col == null)
                     continue;
 
                 colliderCount++;
 
-                if (PhysicsHelper.ColliderHasPlatformEffector (col))
+                if (PhysicsHelper.ColliderHasPlatformEffector(col))
                     fallthroughColliderCount++;
             }
 
@@ -597,7 +602,7 @@ namespace Gamekit2D
                         continue;
 
                     PlatformEffector2D effector;
-                    PhysicsHelper.TryGetPlatformEffector (col, out effector);
+                    PhysicsHelper.TryGetPlatformEffector(col, out effector);
                     FallthroughReseter reseter = effector.gameObject.AddComponent<FallthroughReseter>();
                     reseter.StartFall(effector);
                     //set invincible for half a second when falling through a platform, as it will make the player "standup"
@@ -692,14 +697,14 @@ namespace Gamekit2D
             m_Animator.SetTrigger(m_HashHurtPara);
 
             //we only force respawn if helath > 0, otherwise both forceRespawn & Death trigger are set in the animator, messing with each other.
-            if(damageable.CurrentHealth > 0 && damager.forceRespawn)
+            if (damageable.CurrentHealth > 0 && damager.forceRespawn)
                 m_Animator.SetTrigger(m_HashForcedRespawnPara);
 
             m_Animator.SetBool(m_HashGroundedPara, false);
             hurtAudioPlayer.PlayRandomSound();
 
             //if the health is < 0, mean die callback will take care of respawn
-            if(damager.forceRespawn && damageable.CurrentHealth > 0)
+            if (damager.forceRespawn && damageable.CurrentHealth > 0)
             {
                 StartCoroutine(DieRespawnCoroutine(false, true));
             }
@@ -717,8 +722,8 @@ namespace Gamekit2D
             PlayerInput.Instance.ReleaseControl(true);
             yield return new WaitForSeconds(1.0f); //wait one second before respawing
             yield return StartCoroutine(ScreenFader.FadeSceneOut(useCheckPoint ? ScreenFader.FadeType.Black : ScreenFader.FadeType.GameOver));
-            if(!useCheckPoint)
-                yield return new WaitForSeconds (2f);
+            if (!useCheckPoint)
+                yield return new WaitForSeconds(2f);
             Respawn(resetHealth, useCheckPoint);
             yield return new WaitForEndOfFrame();
             yield return StartCoroutine(ScreenFader.FadeSceneIn());
