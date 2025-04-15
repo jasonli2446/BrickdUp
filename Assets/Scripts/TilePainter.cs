@@ -18,6 +18,9 @@ public class TilePainter : MonoBehaviour
     private Vector3Int tileCellPos;
     private bool tryPlaceBlock = false;
 
+    public AudioSource audioSource;
+    public AudioClip placeBlockSound;
+
     void Start()
     {
         if (playerTransform == null)
@@ -119,6 +122,12 @@ public class TilePainter : MonoBehaviour
                 newBlockObject.transform.position = tileWorldCenter;
                 newBlockObject.tag = "placed";
                 InventoryManager.Instance.OnBlockPlaced(newBlockObject);
+
+                if (audioSource != null && placeBlockSound != null)
+                {
+                    audioSource.PlayOneShot(placeBlockSound);
+                }
+
             }
             else
             {
