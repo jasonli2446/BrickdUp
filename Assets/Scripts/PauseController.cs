@@ -1,10 +1,12 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+
 public class PauseController : MonoBehaviour
 {
+    [Tooltip("Drag your PauseMenuUI root object here")]
     public GameObject pauseMenuUI;
-    bool isPaused = false;
+    private bool isPaused = false;
 
     void Update()
     {
@@ -15,38 +17,52 @@ public class PauseController : MonoBehaviour
     public void TogglePause()
     {
         isPaused = !isPaused;
-        pauseMenuUI.SetActive(isPaused);
-        // Reset all button animators when menu opens
+
         if (isPaused)
-            ResetButtonAnimations();
-        Time.timeScale = isPaused ? 0f : 1f;
-    }
-
-    void ResetButtonAnimations()
-    {
-        // Find every Button under the pause menu
-        foreach (var btn in pauseMenuUI.GetComponentsInChildren<Button>(true))
         {
-            // Grab its Animator (your animated UIButton_Template)
-            var anim = btn.GetComponent<Animator>();
-            if (anim == null) continue;
-
-            // Immediately jump to the "Normal" state at time = 0
-            anim.Play("UIButton_Normal", 0, 0f);
-            // Force the Animator to apply that change right now
-            anim.Update(0f);
-            // Also clear any lingering trigger
-            anim.ResetTrigger("UIButton_Pressed");
+            // Show menu, then reset button anims, then pause time
+            pauseMenuUI.SetActive(true);
+            ResetButtonAnimations();
+            Time.timeScale = 0f;
+        }
+        else
+        {
+            // Before hiding, also reset (so next open is clean)
+            ResetButtonAnimations();
+            pauseMenuUI.SetActive(false);
+            Time.timeScale = 1f;
         }
     }
 
+    private void ResetButtonAnimations()
+    {
+        // Find every Button (even inactive) under the pause menu
+        var buttons = pauseMenuUI.GetComponentsInChildren<Button>(true);
+        foreach (var btn in buttons)
+        {
+            var anim = btn.GetComponent<Animator>();
+            if (anim == null)
+                continue;
+
+            // Jump to the "Normal" state at time=0
+            anim.Play("UIButton_Normal", 0, 0f);
+            // Force the Animator to update immediately
+            anim.Update(0f);
+            // Clear any lingering "Pressed" trigger
+            anim.ResetTrigger("Pressed");
+        }
+    }
+
+    // Hooked to your Resume button
     public void ResumeGame() => TogglePause();
 
+    // Hooked to your Main Menu button
     public void GoToMainMenu()
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene("MainMenu");
     }
 
+    // Hooked to your Quit button
     public void QuitGame() => Application.Quit();
 }
