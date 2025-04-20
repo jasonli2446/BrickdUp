@@ -46,6 +46,7 @@ public class InventoryManager : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         LoadCollectedCoins();
+        blockCountText = GameObject.Find("BlockCountText").GetComponent<TMP_Text>();
         Debug.Log($"Loaded coins for scene {scene.name}: {collectedCoinIDs.Count} collected");
     }
 
