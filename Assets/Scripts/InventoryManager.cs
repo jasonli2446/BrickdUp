@@ -9,6 +9,7 @@ public class InventoryManager : MonoBehaviour
 
     [Header("Inventory UI")]
     public TMP_Text blockCountText;
+    public TMP_Text coinCountText;
 
     [HideInInspector]
     public int currentBlockCount;
@@ -47,6 +48,7 @@ public class InventoryManager : MonoBehaviour
     {
         LoadCollectedCoins();
         blockCountText = GameObject.Find("BlockCountText").GetComponent<TMP_Text>();
+        coinCountText = GameObject.Find("CoinCountText").GetComponent<TMP_Text>();
         Debug.Log($"Loaded coins for scene {scene.name}: {collectedCoinIDs.Count} collected");
     }
 
@@ -79,6 +81,8 @@ public class InventoryManager : MonoBehaviour
     {
         if (blockCountText != null)
             blockCountText.text = currentBlockCount.ToString();
+        if (coinCountText != null)
+            coinCountText.text = currentCoinCount.ToString();
     }
 
     // Add to InventoryManager.cs
@@ -117,6 +121,7 @@ public class InventoryManager : MonoBehaviour
         collectedCoinIDs.Add(coinID);
         SaveCollectedCoins();
         Debug.Log($"Coin {coinID} collected! Total coins: {currentCoinCount}");
+        UpdateUI();
     }
 
 }
