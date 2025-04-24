@@ -31,6 +31,9 @@ public class TilePainter : MonoBehaviour
     private bool useOldStyle = false;
     private GameObject cursorIndicator;
 
+    public AudioSource audioSource;
+    public AudioClip placeBlockSound;
+
     void Start()
     {
         if (playerTransform == null)
@@ -128,6 +131,19 @@ public class TilePainter : MonoBehaviour
                 cursorIndicator.transform.position = tileWorldCenter;
                 cursorIndicator.SetActive(true);
                 cursorIndicator.GetComponent<SpriteRenderer>().color = canPlace ? validColor : invalidColor;
+                targetTilemap.SetTile(tileCellPos, tileToPaint);
+
+                // Create block GameObject
+                GameObject newBlockObject = new GameObject("PlacedBlock");
+                newBlockObject.transform.position = tileWorldCenter;
+                newBlockObject.tag = "placed";
+                InventoryManager.Instance.OnBlockPlaced(newBlockObject);
+
+                if (audioSource != null && placeBlockSound != null)
+                {
+                    audioSource.PlayOneShot(placeBlockSound);
+                }
+
             }
 
             previewTilemap?.ClearAllTiles();
@@ -173,6 +189,8 @@ public class TilePainter : MonoBehaviour
         newBlockObject.tag = "placed";
         InventoryManager.Instance.OnBlockPlaced(newBlockObject);
 
+        if (audioSource && placeBlockSound)
+            audioSource.PlayOneShot(placeBlockSound);
         if (audioSource != null && placeBlockSound != null)
         {
             audioSource.PlayOneShot(placeBlockSound);
