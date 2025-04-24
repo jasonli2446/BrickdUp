@@ -20,6 +20,7 @@ public class ResetZoneController : MonoBehaviour
 
     private void ResetZone()
     {
+        
         if (InventoryManager.Instance == null)
         {
             Debug.LogError("InventoryManager.Instance is null in ResetZoneController");

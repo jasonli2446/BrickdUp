@@ -1,22 +1,35 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using System.Collections;
 
 public class TilePainter : MonoBehaviour
 {
     [Header("Tile Painting Settings")]
     [SerializeField] private Tilemap targetTilemap;
+    [SerializeField] private Tilemap previewTilemap;
     [SerializeField] private TileBase tileToPaint;
+    [SerializeField] private TileBase previewTile;
+    [SerializeField] private TileBase previewTileOutOfRange;
     [SerializeField] private float maxPaintDistance = 3f;
     [SerializeField] private Transform playerTransform;
 
-    [Header("Visual Feedback")]
+    [Header("Preview Feedback")]
+    [SerializeField] private float flickerDuration = 0.1f;
+    [SerializeField] private float previewOpacity = 0.3f;
+
+    [Header("Old Style Settings")]
     [SerializeField] private Color validColor = new Color(0, 1, 0, 0.7f);
     [SerializeField] private Color invalidColor = new Color(1, 0, 0, 0.7f);
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip placeBlockSound;
 
-    private GameObject cursorIndicator;
+    private Collider2D playerCollider;
     private Vector3 mouseWorldPos;
     private Vector3Int tileCellPos;
     private bool tryPlaceBlock = false;
+    private bool placedThisFrame = false;
+    private bool useOldStyle = false;
+    private GameObject cursorIndicator;
 
     public AudioSource audioSource;
     public AudioClip placeBlockSound;
@@ -29,14 +42,25 @@ public class TilePainter : MonoBehaviour
             playerTransform = playerObj != null ? playerObj.transform : transform;
         }
 
+        playerCollider = playerTransform.GetComponent<Collider2D>();
+        if (!playerCollider)
+        {
+            Debug.LogError("TilePainter: Player is missing a Collider2D component!");
+        }
+
         if (targetTilemap == null)
         {
             targetTilemap = FindObjectOfType<Tilemap>();
         }
 
-        if (tileToPaint == null)
+        if (tileToPaint == null || previewTile == null || previewTileOutOfRange == null)
         {
-            Debug.LogError("TilePainter: No tile assigned!");
+            Debug.LogError("TilePainter: Missing required tiles!");
+        }
+
+        if (previewTilemap == null)
+        {
+            Debug.LogWarning("TilePainter: No previewTilemap, preview disabled in new style.");
         }
 
         CreateCursorIndicator();
@@ -45,43 +69,37 @@ public class TilePainter : MonoBehaviour
     void CreateCursorIndicator()
     {
         cursorIndicator = new GameObject("CursorIndicator");
-        cursorIndicator.transform.SetParent(null);
+        var renderer = cursorIndicator.AddComponent<SpriteRenderer>();
+        renderer.sprite = Sprite.Create(TextureCircle(16), new Rect(0, 0, 16, 16), new Vector2(0.5f, 0.5f));
+        renderer.sortingOrder = 100;
+        cursorIndicator.transform.localScale = Vector3.one * 2f;
+        cursorIndicator.SetActive(false);
+    }
 
-        SpriteRenderer renderer = cursorIndicator.AddComponent<SpriteRenderer>();
-        Texture2D texture = new Texture2D(16, 16);
-        Color[] pixels = new Color[16 * 16];
-        float radius = 8f;
-
+    Texture2D TextureCircle(int size)
+    {
+        Texture2D texture = new Texture2D(size, size);
+        Color[] pixels = new Color[size * size];
+        float radius = size / 2f;
         for (int i = 0; i < pixels.Length; i++)
         {
-            int x = i % 16;
-            int y = i / 16;
+            int x = i % size;
+            int y = i / size;
             float dx = x - radius + 0.5f;
             float dy = y - radius + 0.5f;
             pixels[i] = (dx * dx + dy * dy <= radius * radius) ? Color.white : Color.clear;
         }
-
         texture.SetPixels(pixels);
         texture.Apply();
-
-        renderer.sprite = Sprite.Create(texture, new Rect(0, 0, 16, 16), new Vector2(0.5f, 0.5f));
-        renderer.sortingOrder = 100;
-        renderer.color = validColor;
-
-        cursorIndicator.transform.localScale = Vector3.one * 2f;
+        return texture;
     }
 
     void Update()
     {
-        // Dont allow painting if the game is paused
-        if (Time.timeScale == 0f)
-            return;
+        if (Time.timeScale == 0f) return;
 
-        // Check for mouse click
-        if (Input.GetMouseButtonDown(0))
-        {
-            tryPlaceBlock = true;
-        }
+        if (Input.GetMouseButtonDown(0)) tryPlaceBlock = true;
+        if (Input.GetMouseButtonDown(1)) useOldStyle = !useOldStyle;
     }
 
     void LateUpdate()
@@ -89,32 +107,30 @@ public class TilePainter : MonoBehaviour
         Camera cam = Camera.main;
         if (!cam || !playerTransform || !tileToPaint || !targetTilemap) return;
 
-        // Mouse world position AFTER camera moves
         Vector3 screen = Input.mousePosition;
         screen.z = -cam.transform.position.z;
         mouseWorldPos = cam.ScreenToWorldPoint(screen);
-        mouseWorldPos.z = 0;
+        mouseWorldPos.z = 0f;
 
         tileCellPos = targetTilemap.WorldToCell(mouseWorldPos);
-        cursorIndicator.transform.position = mouseWorldPos;
-
-        // Distance from player to tile cell center
         Vector3 tileWorldCenter = targetTilemap.GetCellCenterWorld(tileCellPos);
+
         float distance = Vector2.Distance(playerTransform.position, tileWorldCenter);
+        bool inRange = distance <= (maxPaintDistance + 0.4f);
 
-        // Optional buffer
-        float buffer = 0.4f;
-        bool inRange = distance <= (maxPaintDistance + buffer);
+        bool alreadyOccupied = targetTilemap.HasTile(tileCellPos);
+        bool overlapsPlayer = playerCollider != null && playerCollider.bounds.Intersects(new Bounds(tileWorldCenter, targetTilemap.cellSize));
+        bool hasBlocks = InventoryManager.Instance.currentBlockCount > 0;
 
-        // Update cursor color
-        var rend = cursorIndicator.GetComponent<SpriteRenderer>();
-        rend.color = inRange ? validColor : invalidColor;
+        bool canPlace = inRange && !alreadyOccupied && !overlapsPlayer && hasBlocks;
 
-        // Try to place tile
-        if (tryPlaceBlock && inRange)
+        if (useOldStyle)
         {
-            if (InventoryManager.Instance.currentBlockCount > 0)
+            if (cursorIndicator != null)
             {
+                cursorIndicator.transform.position = tileWorldCenter;
+                cursorIndicator.SetActive(true);
+                cursorIndicator.GetComponent<SpriteRenderer>().color = canPlace ? validColor : invalidColor;
                 targetTilemap.SetTile(tileCellPos, tileToPaint);
 
                 // Create block GameObject
@@ -129,12 +145,59 @@ public class TilePainter : MonoBehaviour
                 }
 
             }
-            else
+
+            previewTilemap?.ClearAllTiles();
+
+            if (tryPlaceBlock && canPlace)
             {
-                Debug.Log("No blocks left to place!");
+                PlaceTile(tileWorldCenter);
+            }
+        }
+        else
+        {
+            if (cursorIndicator != null) cursorIndicator.SetActive(false);
+
+            if (previewTilemap != null && !placedThisFrame)
+            {
+                previewTilemap.color = new Color(1f, 1f, 1f, previewOpacity);
+                previewTilemap.ClearAllTiles();
+                previewTilemap.SetTile(tileCellPos, canPlace ? previewTile : previewTileOutOfRange);
+            }
+
+            if (tryPlaceBlock && canPlace)
+            {
+                PlaceTile(tileWorldCenter);
+                StartCoroutine(FlickerPreview());
             }
         }
 
         tryPlaceBlock = false;
+    }
+
+    void PlaceTile(Vector3 tileWorldCenter)
+    {
+        if (InventoryManager.Instance.currentBlockCount <= 0)
+        {
+            Debug.Log("No blocks left to place!");
+            return;
+        }
+
+        targetTilemap.SetTile(tileCellPos, tileToPaint);
+
+        GameObject newBlockObject = new GameObject("PlacedBlock");
+        newBlockObject.transform.position = tileWorldCenter;
+        newBlockObject.tag = "placed";
+        InventoryManager.Instance.OnBlockPlaced(newBlockObject);
+
+        if (audioSource && placeBlockSound)
+            audioSource.PlayOneShot(placeBlockSound);
+    }
+
+    IEnumerator FlickerPreview()
+    {
+        placedThisFrame = true;
+        previewTilemap.ClearAllTiles();
+        yield return new WaitForSeconds(flickerDuration);
+        placedThisFrame = false;
     }
 }
