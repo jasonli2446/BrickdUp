@@ -15,6 +15,13 @@ public class MainMenuController : MonoBehaviour
         SceneManager.LoadScene("LevelSelect");
     }
 
+    public void ResetProgress()
+    {
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.Save();
+        SceneManager.LoadScene("MainMenu");
+    }
+
     // Called by "Quit Game" button
     public void QuitGame()
     {
