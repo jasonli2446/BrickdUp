@@ -1,10 +1,12 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 using Gamekit2D;
 
 public class GameOverController : MonoBehaviour
 {
     public GameObject gameOverUI;
+    public TextMeshProUGUI coinCountText;
     private bool triggered = false;
 
     void OnTriggerEnter2D(Collider2D other)
@@ -18,6 +20,11 @@ public class GameOverController : MonoBehaviour
 
     void ShowGameOver()
     {
+        if (coinCountText != null && InventoryManager.Instance != null)
+        {
+            coinCountText.text = $"Coins Collected: {InventoryManager.Instance.currentCoinCount}";
+        }
+
         gameOverUI.SetActive(true);
         Time.timeScale = 0f;
     }
