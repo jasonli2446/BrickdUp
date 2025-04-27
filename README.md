@@ -2,7 +2,7 @@
 
 ## CSDS 290 Final Project - Spring 2025 - Team 4
 
-![Game Logo Placeholder](assets/logo_placeholder.png)
+![Game Logo Placeholder](Assets/UI/Sprites/BrickdUpLogo.png)
 
 ## Table of Contents
 
