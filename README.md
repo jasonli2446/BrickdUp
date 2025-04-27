@@ -24,7 +24,7 @@ As a skilled stonemason, you've been challenged to reach the pinnacle of a myste
 
 ### Goal
 
-Progress through a series of checkpoints and ultimately reach the top of the tower to complete your journey. There's no time limit or scoring system—success is measured by how high you climb.
+Progress through a series of checkpoints and ultimately reach the top of the tower to complete your journey. There's no time limit or scoring system—success is measured by how high you climb. Collect coins scattered around the levels for an extra challenge.
 
 ## Gameplay & Mechanics
 
