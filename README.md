@@ -1,77 +1,74 @@
-# Unity Project Setup (PLEASE READ)
+# Brick'd Up
 
-Before you clone the team repo, follow these instructions:
+## CSDS 290 Final Project - Spring 2025 - Team 4
 
-1. Install GitHub Desktop, which also installs Git LFS: https://desktop.github.com (if you are using git via command line, install Git LFS: https://git-lfs.com)
-2. Submit your GitHub username in the Canvas assignment that is titled “Provide your GitHub account Name”
-3. You will receive an email with permission to access your team’s GitHub repo website
-4. (for GitHub Desktop) Goto the repo website, click the green Code button, and select “Open with GitHub Desktop” and clone the template project to your local machine
-   (for git command line) Go to GitHub account settings and authorize your SSH key for CWRU SSO URL (https://docs.github.com/en/enterprise-cloud@latest/authentication/authenticating-with-saml-single-sign-on/authorizing-an-ssh-key-for-use-with-saml-single-sign-on) and then clone the final project template
+![Game Logo Placeholder](assets/logo_placeholder.png)
 
-## 5. Modify your GLOBAL .gitconfig
+## Table of Contents
 
-Not everyone on your team may have the same path to UnityYAMLMerge (i.e. different operating systems or install locations). Because of this, we suggest you modify your local config to define the "unityyamlmerge" merge tool that this repository points to. To do this:
+- [Game Overview](#game-overview)
+- [Gameplay & Mechanics](#gameplay--mechanics)
+- [Controls](#controls)
+- [Features](#features)
+- [Visual Style & Audio](#visual-style--audio)
+- [Installation & Setup](#installation--setup)
+- [Team Members](#team-members)
 
-i. Reveal hidden files on your operating system
+## Game Overview
 
-- Windows 10: Open the File Explorer application and select View > Options > Change folder and search options and then select the View tab and, in Advanced settings, select Show hidden files, folders, and drives and OK
-- Windows 11: Open the File Explorer application and select View > Show > Hidden Items
-- MacOS: Click on Finder and press the keyboard combination Shift + Cmd + . (period key)
+**Brick'd Up** is a platformer puzzle game where you play as a stonemason climbing an ancient tower. Unlike traditional platformers, you don't just navigate the environment—you shape it! Use your masonry skills to place blocks strategically, creating platforms and pathways to ascend the tower while avoiding obstacles and collecting resources.
 
-ii. Open the `.git/config` file by navigating to your local repo folder, open the hidden `.git` folder, then open the config file (note: this is different from the `.gitconfig` file in the repo’s root folder)
+### Premise
 
-iii. Identify your version of unity (e.g. `2022.3.19f1`). This will replace the word `VERSION` in the paths commented below depending on your OS. Then, add the following text to the bottom of the file, replacing `<path to UnityYAMLMerge>` with the one specific to your OS and Unity version. For instance, in Unity version 2022.3.19f1 on Windows, the last line should be `cmd = 'C:\\Program Files\\Unity\\Hub\\Editor\\2022.3.19f1\\Editor\\Data\\Tools\\UnityYAMLMerge.exe' merge -p "$BASE" "$REMOTE" "$LOCAL" "$MERGED"`
+As a skilled stonemason, you've been challenged to reach the pinnacle of a mysterious tower. Armed with only your building expertise and a small supply of blocks, you must navigate upward, gathering more materials and overcoming increasingly difficult challenges along your ascent.
 
-```bash
-[mergetool "unityyamlmerge"]
-    trustExitCode = false
-    #Replace <path to UnityYAMLMerge> in the next line with the following default locations (may be different depending on your Unity installation location)
-    # Installs using the Unity Hub (Default):
-    # Win: C:\\Program Files\\Unity\\Hub\\Editor\\VERSION\\Editor\\Data\\Tools\\UnityYAMLMerge.exe
-    # MacOS: /Applications/Unity/Hub/Editor/VERSION/Unity.app/Contents/Tools/UnityYAMLMerge
-    # Linux: /home/USERNAME/Unity/Hub/Editor/VERSION/Editor/Data/Tools/UnityYAMLMerge
-    cmd = '<path to UnityYAMLMerge>' merge -p "$BASE" "$REMOTE" "$LOCAL" "$MERGED"
-```
+### Goal
 
-iv. Change the Git Config settings to use your local Git config in the menu bar Repository > Repository Settings > Git Config > Use a local Git config > Save.
+Progress through a series of checkpoints and ultimately reach the top of the tower to complete your journey. There's no time limit or scoring system—success is measured by how high you climb.
 
-## 6. Add pre-commit and post-merge scripts
+## Gameplay & Mechanics
 
-Download the scripts from the link below and paste them into the hidden folder `<your_repo>/.git/hooks/`
+### Core Mechanics
 
-- Pre-commit: https://github.com/NYUGameCenter/Unity-Git-Config/blob/master/pre-commit
-- Post-commit: https://github.com/NYUGameCenter/Unity-Git-Config/blob/master/post-merge
-  On MacOS and Linux, the pre-commit and post-merge files need to be made executable. This involves using terminal (Terminal.app on MacOS) to modify the file permissions for these two files using the following commands.
+- **Block Placement**: The key innovation of Brick'd Up is the ability to find and place blocks to create your own platforms, fundamentally changing how you approach platformer gameplay
+- **Resource Management**: Collect building materials throughout the levels to maintain your inventory
+- **Physics Interactions**: Different block types have unique properties (e.g., sliding blocks)
 
-```bash
-> cd <local_repo_folder>/.git/hooks
-> chmod 755 pre-commit
-> chmod 755 post-merge
-```
+## Controls
 
-## 7. Open the Project in Unity
+- **Movement**: A/D keys to move left/right
+- **Jump**: Space bar
+- **Block Placement**: Mouse click to place blocks from inventory
+- **Placement Preview**: Right-click to toggle block placement preview
 
-This project was created using `2021.3.0f1`. When you open this project in Unity, Unity may say that it needs to upgrade the project. Given this is a bare-bones project, this is a safe action and you may allow Unity to continue. Overall, your entire team should be using the **same version of Unity**.
+## Features
 
-## 8. Start creating your new project and commit/push changes to the team remote repo
+- Progressive difficulty as you climb higher
+- Multiple block types with different properties
+- Checkpoint system to track progress
+- Collectible coins throughout the levels
+- Tutorial elements integrated into gameplay
 
-## Video tutorials
+## Visual Style & Audio
 
-1. Github setup: https://youtu.be/iWniKp_O21o?feature=shared
-2. Merge conflict resolution: https://youtu.be/vJIjV-GlGFg?feature=shared
+- **Art Direction**: Pixelated medieval aesthetic featuring:
 
-## Starting a new project or adding version control to an old one?
+  - Stone walls and floors
+  - Torch lighting
+  - Treasure chests containing building materials
+  - Atmospheric tower environment
 
-If you are starting a new project you can start working now, but if you are adding version control to an old one follow these steps:
+- **Music & Sound**: Electronic soundtrack that evolves as you climb higher in the tower, creating a sense of progression and accomplishment
 
-1. Paste your project files into this repository on your local machine.
-2. Open the project on the target Unity version, so all the files are modified as necessary.
-3. If you had Unity Version Control (formerly Collab or Plastic SCM), disable it now.
-4. Save your project and close Unity.
-5. Delete left over files from Unity Version Control like x.meta.private or y.meta.private.meta (some files may be hidden so enable see hidden files)
-6. Commit and push.
-7. If you are having issues with .meta files check and modify your gitignore or make sure there are no empty folders.
+## Installation & Setup
 
-test commit - jason
-test commit - Dakin
-test commit - Aadhav
+[Installation instructions will be added when the project is ready for distribution]
+
+## Team Members
+
+CSDS 290 - Team 4
+
+- Jason Li
+- Dakin Muhlner
+- Aadhav Bharadwaj
+- Kent Manion
