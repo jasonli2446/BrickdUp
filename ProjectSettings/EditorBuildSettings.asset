@@ -26,7 +26,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/2DGamekit/Scenes/UI/UIMenus.unity
     guid: 705f1f73151a73046842d4e4ec8f514d
-  - enabled: 1
+  - enabled: 0
     path: Assets/2DGamekit/Scenes/UI/Loading.unity
     guid: ebc4647ff02971c4ba1b207af066be4d
   - enabled: 0
