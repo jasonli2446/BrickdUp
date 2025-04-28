@@ -11,7 +11,6 @@
 - [Controls](#controls)
 - [Features](#features)
 - [Visual Style & Audio](#visual-style--audio)
-- [Installation & Setup](#installation--setup)
 - [Team Members](#team-members)
 
 ## Game Overview
@@ -59,10 +58,6 @@ Progress through a series of checkpoints and ultimately reach the top of the tow
   - Atmospheric tower environment
 
 - **Music & Sound**: Electronic soundtrack that evolves as you climb higher in the tower, creating a sense of progression and accomplishment
-
-## Installation & Setup
-
-[Installation instructions will be added when the project is ready for distribution]
 
 ## Team Members
 
