@@ -37,7 +37,7 @@ Progress through a series of checkpoints and ultimately reach the top of the tow
 
 - **Movement**: A/D keys to move left/right
 - **Jump**: Space bar
-- **Block Placement**: Mouse click to place blocks from inventory
+- **Block Placement**: Left-click to place blocks from inventory
 - **Placement Preview**: Right-click to toggle block placement preview
 
 ## Features
