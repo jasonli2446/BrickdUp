@@ -26,7 +26,17 @@ public class LevelSelectorController : MonoBehaviour
         // Show level name and enable button
         if (txt != null)
         {
-          txt.text = levelSceneNames[i];
+          // Format the level name with a space between "Level" and the number
+          string levelName = levelSceneNames[i];
+          if (levelName.StartsWith("Level"))
+          {
+            string levelNumber = levelName.Substring(5);
+            txt.text = "Level " + levelNumber;
+          }
+          else
+          {
+            txt.text = levelName; // Fallback to original name if it doesn't follow pattern
+          }
           txt.color = Color.white;
         }
         btn.interactable = true;
