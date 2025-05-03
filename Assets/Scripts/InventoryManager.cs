@@ -124,4 +124,10 @@ public class InventoryManager : MonoBehaviour
         UpdateUI();
     }
 
+    public void ResetAllCollectedCoins()
+    {
+        collectedCoinIDs.Clear();
+        currentCoinCount = 0;
+        UpdateUI();
+    }
 }

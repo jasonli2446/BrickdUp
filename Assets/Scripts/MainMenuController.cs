@@ -17,8 +17,17 @@ public class MainMenuController : MonoBehaviour
 
     public void ResetProgress()
     {
+        // Clear PlayerPrefs data
         PlayerPrefs.DeleteAll();
         PlayerPrefs.Save();
+
+        // Reset the InventoryManager's in-memory state
+        if (InventoryManager.Instance != null)
+        {
+            InventoryManager.Instance.ResetAllCollectedCoins();
+            InventoryManager.Instance.ResetBlockCount(0);
+        }
+
         SceneManager.LoadScene("MainMenu");
     }
 
