@@ -53,3 +53,7 @@
 *.rns filter=lfs diff=lfs merge=lfs -text
 *.reason filter=lfs diff=lfs merge=lfs -text
 *.lxo filter=lfs diff=lfs merge=lfs -text
+
+#GitHub linguist vendored
+*.shader linguist-vendored
+Assets/2DGamekit/* linguist-vendored
