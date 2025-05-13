@@ -4,6 +4,10 @@
 
 ![Game Logo Placeholder](Assets/UI/Sprites/BrickdUpLogo.png)
 
+## Click here to play!
+
+https://ecse-csds290.itch.io/brickdup
+
 ## Table of Contents
 
 - [Game Overview](#game-overview)
